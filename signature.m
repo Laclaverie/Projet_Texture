@@ -5,12 +5,18 @@ function [sig]=signature(img,numsig)
         sig=double(mean2(img));
      case 'entropy'
          sig=double(entropy(img));
+     case 'moment3'
+         sig=double(moment(img,3));
      case 'histo'
           sig=imhist(img);
      case 'LBP'
-        % à faire
+        sig = histogrammeLBP(img);
      case 'HOG'
-         % à faire
+         sig= histogrammeGradientsOrientes(img,250);
+     otherwise
+        sig = 0;
+     
+         
  end
 end
  
