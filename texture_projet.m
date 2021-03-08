@@ -3,8 +3,28 @@
 close all;
 clear all;
 clc
-rng();
+veriteTerrain =[];
+sortie_algo=[];
 %% Creer images de ref
+categories_larges{1,1}= 'lisse';
+categories_larges{2,1}= 'beech';
+categories_larges{3,1}= 'hornbeam';
+categories_larges(4:11,1)= cellstr('non defini');
+
+
+categories_larges{1,2}= 'pas-lisse';
+categories_larges{2,2}= 'alder';
+categories_larges{3,2}= 'birch';
+categories_larges{4,2}= 'chestnut';
+categories_larges{5,2}= 'ginkgoBiloba';
+categories_larges{6,2}= 'horseChestnut';
+categories_larges{7,2}= 'linden';
+categories_larges{8,2}= 'oak';
+categories_larges{9,2}= 'orientalPlane';
+categories_larges{10,2}= 'pine';
+categories_larges{11,2}= 'spruce';
+
+
 nb_images_ref = 15;
 rep=[];
     rep{1} = 'alder/';
@@ -37,20 +57,29 @@ if tmp==0
 end
 
 %% Recuperer image test
+for nb_img_test =1 : 25
+   
 % On prend aleatoirment un répertoire
 close all;
+rng();
 rd = randi([1 12]);
 list=dir([rep{rd} '*.JPG']);
 nbIm=numel(list);
 rd_image= randi([1 nbIm]);
 
 img_ref= imread(sprintf('%s%d.JPG',rep{rd},rd_image));
-
+if rd ==2|| rd ==6
+    categorie_ref="lisse";
+else
+    categorie_ref="pas-lisse";
+end
+%img_ref= imread(sprintf('%s%d.JPG','alder/',rd_image));
 % figure; imshow(img,[]);
 %% Creer signatures de chaque images de ref
+
 rep2 = 'baseRef/';
-handle = @histogrammeLBP;
-nom_methode = 'histo';
+handle = @entropy;
+nom_methode = 'entropy';
 switch nom_methode
     case 'histo' % Comparaisons histogrammes
         compteur=1;
@@ -58,7 +87,7 @@ switch nom_methode
             for j=1:nb_images_ref
                 img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
                 tab{compteur}=img; 
-                nom{compteur}=sprintf('%d_%d.JPG',i,j);
+                nom{compteur}=sprintf('%s%d_%d.JPG',rep2,i,j);
                 %img=graycomatrix(img);
                 sig{compteur}=handle(img,256); 
                 compteur=compteur +1;
@@ -83,7 +112,7 @@ switch nom_methode
         subplot(2,3,1); imshow(img_ref);title(sprintf('%s : numero : %d',rep{rd},rd));
         for sim=1:5 
             legende=sprintf('%s \n %.5f',classement{sim},Trie(sim,1));
-            subplot(2,3,sim+1); imshow(tab{classement{sim}}); title(legende);
+            subplot(2,3,sim+1); imshow(classement{sim}); title(legende);
         end
         
              
@@ -94,60 +123,60 @@ switch nom_methode
             for j=1:nb_images_ref
                 img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
                 tab{compteur}=img; 
-                nom{compteur}=sprintf('%d_%d.JPG',i,j);
+                nom{1,compteur}=sprintf('%d_%d.JPG',i,j);
+                nom{2,compteur}=i; % Categorie de l'image
+                if i==2|| i==6
+                    nom{3,compteur}="lisse";
+                else
+                    nom{3,compteur}="pas-lisse";
+                end
+                    
                 %img=graycomatrix(img);
                 if mod(i*j,13)==12
-                    figure; imshow(rangefilt(img,nhood),[]);
+                   % figure; imshow(rangefilt(img,nhood),[]);
                 end
-                sig{compteur}=handle(rangefilt(img,nhood)); 
+                sig{compteur}=handle((img));
+                %sig{compteur}=handle(entropyfilt(img));
                 compteur=compteur +1;
             end
         end
-        ref = handle(img_ref);
+        ref = handle((img_ref));
         for i=1:fin*nb_images_ref
                 comp(i,1) = abs(ref-sig{i}); % écart en valeur absolue
                 comp(i,2) = i; % numéro image correspondant
         end
         Trie = sortrows(comp,1);
          % affiche des 5 plus proches, distance croissante 
-        subplot(2,3,1); imshow(img_ref);title(sprintf('%s : numero : %d',rep{rd},rd));
+         matches =0;
+         figure;
+       subplot(2,3,1); imshow(img_ref);title(sprintf('%s : n° dossier : %d \n Categorie : %s ',rep{rd},rd,categorie_ref));
+       %subplot(2,3,1); imshow(img_ref);title(sprintf('%s : numero : %d','alder/',rd));
         for sim=1:5 
-            legende=sprintf('%s \n %.5f',nom{Trie(sim,2)},Trie(sim,1));
+            if nom{3,Trie(sim,2)}==categorie_ref
+                matches=matches+1;
+            end
+            legende=sprintf('%s \n %.5f \n Categorie : %s',nom{1,Trie(sim,2)},Trie(sim,1),nom{3,Trie(sim,2)});
             subplot(2,3,sim+1); imshow(tab{Trie(sim,2)}); title(legende);
-        end
-        
+        end  
+        fprintf('Bonnes categories : %d \n ',matches);
 
 end
 
 % Trie = sort(abs([sig{:}]));
+%% Matrice de confusion
+veriteTerrain= [veriteTerrain categorie_ref];
+sortie_algo = [sortie_algo nom{3,Trie(1,2)}];
 
-
-%% test fourrier
-%close all;
-im = double (imread('alder/15.JPG'));
-im=imgaussfilt(im,1);
-figure; imshow(im,[]); title('image d''origine');
-FT =(fft2(im));
-FT(1,1)=1;
-FT=fftshift(FT);
-logFT= log(abs(real(FT))+1)>6;
-%logFT= abs(FT);
-figure;imshow(logFT,[]);title('log entier');colorbar;axis on;
-[X,Y]= size(logFT);
-logFT= logFT(floor(X/2)- 1/10*floor(X/2):floor(X/2)+1/10*floor(X/2), floor(Y/2)+1:end);
-figure; imshow(logFT,[]);colorbar; axis on;title('log pas entier');
-%% Bon fourrier
-close all;
-I = double (imread('alder/15.JPG'));
-
-fft2I=fft2(I);
-% c :
-fftI2(1,1)=0; % On supprime la composante continue ( pour éviter qu'on ne voit que ça sur l'image)
-fft2I=fftshift(fft2I); % translation pour avoir l'origine au centre de l'image
-
-
-fx=(-1/2):1/size(I,2) : ((1/2)-1/size(I,2) ); % axe des abscisses
-fy=(-1/2):1/size(I,1) : ((1/2)-1/size(I,1) ); % axe des ordonnées
-figure; imagesc(fx,fy,log(abs(fft2I)+1));axis on; title('module du spectre de l''image');colormap('gray') ;colorbar
-colormap('gray') ;colorbar
-
+end
+c= confusionmat(veriteTerrain,sortie_algo)
+%%
+% color = lines(2); % Generate color values 2 categories 
+% 
+% Categorie = ["lisse" "pas-lisse"];
+% X = Acceleration;
+% Y = MPG;
+% nombreCategorie=4;
+% 
+% ax1 = subplot(1,1,1); % Left subplot
+% gscatter(X,Y,Categorie,color(1:nombreCategorie,:));
+% title('Title');
