@@ -82,8 +82,8 @@ switch nom_methode
          % affiche des 5 plus proches, distance décroissante 
         subplot(2,3,1); imshow(img_ref);title(sprintf('%s : numero : %d',rep{rd},rd));
         for sim=1:5 
-            legende=sprintf('%s \n %.5f',classement{i},Trie(sim,1));
-            subplot(2,3,sim+1); imshow(tab{classement{i}}); title(legende);
+            legende=sprintf('%s \n %.5f',classement{sim},Trie(sim,1));
+            subplot(2,3,sim+1); imshow(tab{classement{sim}}); title(legende);
         end
         
              
