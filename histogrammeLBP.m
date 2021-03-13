@@ -50,6 +50,7 @@ for i=2:Nblig-1
     end
 end
 
+%h=imhist(T,quantification);
 h=imhist(T,quantification);
 h = h./sum(h);
 end

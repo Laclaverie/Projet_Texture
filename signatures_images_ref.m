@@ -12,6 +12,8 @@ switch nom_methode
         for i = 1:fin
             for j=1:nb_images_ref
                 img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
+                d= 256/quantification;
+                img = floor(img*255/d)/(quantification-1); % Je quantifie
                 tab{compteur}=img; 
                 nom{1,compteur}=sprintf('%d_%d.JPG',i,j);
                 nom{2,compteur}=i; % Categorie de l'image
@@ -31,6 +33,8 @@ switch nom_methode
         for i = 1:fin
             for j=1:nb_images_ref
                 img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
+                d= 256/quantification;
+                img = floor(img*255/d)/(quantification-1); % Je quantifie
                 tab{compteur}=img; 
                 nom{1,compteur}=sprintf('%d_%d.JPG',i,j);
                 nom{2,compteur}=i; % Categorie de l'image
