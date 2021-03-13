@@ -27,7 +27,7 @@ categories_larges{10,2}= 'pine';
 categories_larges{11,2}= 'spruce';
 
 
-nb_images_ref = 15;
+
 rep=[];
     rep{1} = 'alder/';
     rep{2} = 'beech/';
@@ -42,9 +42,11 @@ rep=[];
     rep{11} = 'pine/';
     rep{12} = 'spruce/';
     fin= length(rep);
-    
-tmp= exist ('baseRef');
+ 
+nb_images_ref = 15;
 
+%% Creer le dossier des images de references
+tmp= exist ('baseRef');
 if tmp==0
     disp('Creation base de reference');
     mkdir baseRef 
