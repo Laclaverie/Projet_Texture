@@ -1,0 +1,49 @@
+•Alder : Plusieurs aspects. Longues fentes verticales profondes de environ 1 cm, sortes d'écailles rectangles. Pas de motif particuliers. Pas de changement de coloration.
+
+•Beech : Assez uniforme, quelques très fines stries plus foncés verticales pas profondes par moment.
+
+•Birch : Ecorce homogène en surface avec de gros trous en forme d'ovales, principalement en verticale. Cela provoque un gros changement de coloration.
+
+•Chestnut : Longues fentes verticales, parfois un peu inclinées mais de 5-10° maximum
+
+•GinkgoBibola : Plutôt homogène ,légères très larges fentes. Pas de changement de coloration.
+
+•Hornbeam : Assez uniforme, quelques stries verticales un peu plus claires de environ 1cm de large pas profondes
+
+•HorseChestnut : Assez chaotique. Tres longues fentes verticales assez profondes parfois inclinées jusqu'à environ 10°, et plutôt parallèles entre elles. Quelques fois motifs en écailles. 
+
+•Linden : Tres longues et profondes fentes verticales et plutôt parallèles entre elles. 
+
+•Oak : Tres longues fentes verticales.
+
+•OrientalPlane : De la merde. Tous le temps taches en motifs militaires, mais des fois surface lisse, et des fois surfaces écailleuse. Pas de fente et beaucoup de variation de coloration.
+
+•Pine : Ecorce en fente verticales assez profondes et pas très droites, pas très continues non plus.
+
+•Spruce : Plein de toutes petites écailles, aucune fentes. Aspect légèrement granuleux parfois. Pas de changement de coloration.
+
+
+
+
+
+
+
+
+4 groupes d'écorce : (certains cumulent 2 groupes)
+
+•Fentes verticales : Alder, Chestnut, HorseChestnut, Linden, Oak, Pine.
+•Ecailles : Alder, HornChestnut, OrientalPlane, Spruce.
+•Gros trous/Tache : Birch, OrientalPlane.
+•Plutôt homogène : Beech, GinkgoBibola, HornBeam, Spruce.
+
+
+
+
+
+Difficultés majeures : 
+
+•Grosse ressemblance entre : Alder, Chestnut et HorseChestnut
+•Grosse ressemblance entre : Linden et Oak
+•Grosse ressemblance entre : Beech et HornBeam
+•L'OrientalPlane ne ressemble à rien.
+

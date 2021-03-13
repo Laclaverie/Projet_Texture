@@ -1,8 +1,10 @@
 %% ** Projet Texture**
 %% Commencer l'analyse
+warning('off','all');
 close all;
 clear all;
 clc
+quantification= 64;
 veriteTerrain =[];
 sortie_algo=[];
 %% Creer images de ref
@@ -42,13 +44,18 @@ rep=[];
     fin= length(rep);
     
 tmp= exist ('baseRef');
+
 if tmp==0
+    disp('Creation base de reference');
     mkdir baseRef 
     for i=1:fin
     rep_ref= rep{i};
     list=dir([rep_ref '*.JPG']);
     for j=1:nb_images_ref
         img=imread(sprintf('%s%d.JPG',rep_ref,1*j)); % je lis une image sur 3
+        %img= floor(img.*256/quantification);
+        %thresh= multithresh(img,nb_quantification); % 20 niveaux de quantification
+        %img= imquantize(img,thresh);
         %figure;imshow(img,[]);
         imwrite(img,sprintf('%s%d_%d.JPG','baseRef/',i,j)); % j'écris
     end
@@ -57,10 +64,11 @@ if tmp==0
 end
 
 %% Recuperer image test
-for nb_img_test =1 : 25
+for nb_img_test =1 : 5
    
 % On prend aleatoirment un répertoire
 close all;
+disp('prendre une image aleatoire');
 rng();
 rd = randi([1 12]);
 list=dir([rep{rd} '*.JPG']);
@@ -68,6 +76,9 @@ nbIm=numel(list);
 rd_image= randi([1 nbIm]);
 
 img_ref= imread(sprintf('%s%d.JPG',rep{rd},rd_image));
+%img_ref= floor(img_ref.*256/quantification); % quantifier
+%thresh= multithresh(img_ref,nb_quantification); % 20 niveaux de quantification
+%img_ref= imquantize(img_ref,thresh); % quantifier
 if rd ==2|| rd ==6
     categorie_ref="lisse";
 else
@@ -78,22 +89,38 @@ end
 %% Creer signatures de chaque images de ref
 
 rep2 = 'baseRef/';
-handle = @entropy;
-nom_methode = 'entropy';
+handle = @histogrammeLBP;
+nom_methode = 'histo';
 switch nom_methode
+    
     case 'histo' % Comparaisons histogrammes
         compteur=1;
-         for i = 1:fin
+        disp('creer les signatures');
+        for i = 1:fin
             for j=1:nb_images_ref
                 img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
+               %img= floor(img.*256/quantification); % quantifier
+               %thresh= multithresh(img,nb_quantification); % 20 niveaux de quantification 
+               %img= imquantize(img,thresh); % quantifier
                 tab{compteur}=img; 
-                nom{compteur}=sprintf('%s%d_%d.JPG',rep2,i,j);
+                nom{1,compteur}=sprintf('%d_%d.JPG',i,j);
+                nom{2,compteur}=i; % Categorie de l'image
+                if i==2|| i==6
+                    nom{3,compteur}="lisse";
+                else
+                    nom{3,compteur}="pas-lisse";
+                end
+                    
                 %img=graycomatrix(img);
-                sig{compteur}=handle(img,256); 
+                if mod(i*j,13)==12
+                   % figure; imshow(rangefilt(img,nhood),[]);
+                end
+                sig{compteur}=handle(img,quantification);
+                %sig{compteur}=handle(entropyfilt(img));
                 compteur=compteur +1;
             end
-         end
-         ref = handle(img_ref,256);
+        end
+         ref = handle(img_ref,quantification);
          for i=1:fin*nb_images_ref
             comp(i,1) = sum(min(ref,sig{i})); % distance par intersection, plus elle est élévée, plus la similarité est grande
             comp(i,2) = i; % numéro image correspondant
@@ -109,19 +136,30 @@ switch nom_methode
          
 
          % affiche des 5 plus proches, distance décroissante 
-        subplot(2,3,1); imshow(img_ref);title(sprintf('%s : numero : %d',rep{rd},rd));
+         matches =0;
+         figure;
+       subplot(2,3,1); imshow(img_ref);title(sprintf('%s : n° dossier : %d \n Categorie : %s ',rep{rd},rd,categorie_ref));
+       %subplot(2,3,1); imshow(img_ref);title(sprintf('%s : numero : %d','alder/',rd));
         for sim=1:5 
-            legende=sprintf('%s \n %.5f',classement{sim},Trie(sim,1));
-            subplot(2,3,sim+1); imshow(classement{sim}); title(legende);
-        end
+            if nom{3,Trie(sim,2)}==categorie_ref
+                matches=matches+1;
+            end
+            legende=sprintf('%s \n %.5f \n Categorie : %s',nom{1,Trie(sim,2)},Trie(sim,1),nom{3,Trie(sim,2)});
+            subplot(2,3,sim+1); imshow(tab{Trie(sim,2)}); title(legende);
+        end  
+        fprintf('Bonnes categories : %d \n ',matches);
         
              
    otherwise % Pas un histogramme
-        nhood = [1 1 1];
+        %nhood = [1 1 1];
+        disp('creer les signatures');
         compteur=1;
         for i = 1:fin
             for j=1:nb_images_ref
                 img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
+                %img= floor(img.*256/quantification);
+                %thresh= multithresh(img,nb_quantification); % 20 niveaux de quantification
+                %img= imquantize(img,thresh);% quantifier
                 tab{compteur}=img; 
                 nom{1,compteur}=sprintf('%d_%d.JPG',i,j);
                 nom{2,compteur}=i; % Categorie de l'image

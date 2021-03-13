@@ -1,9 +1,9 @@
-function [h]=histogrammeLBP(I,qq)
+function [h,T]=histogrammeLBP(I,quantification)
 % sortie : histogramme normalisé des codes LBP
 % non gestion des bords
 Nblig=size(I,1);
 Nbcol=size(I,2);
-qq=2;
+
 % T image des codes LBP, robustesse variations d'éclairement,
 % représentation agancement voisinage local
 
@@ -36,9 +36,20 @@ for i=2:Nblig-1
         if I(i-1,j-1) >= centre
             T(i,j)=bitset(T(i,j),8);
         end
+        
+        minValue = T(i,j);
+        currentBinaryValue = dec2bin(T(i,j)); %transfer to binary type
+        for k = 1:8
+            temp = circshift(currentBinaryValue, k); %Shift positions of elements
+            temp = bin2dec(temp); % transfer to decimal type
+            if temp < minValue
+                minValue = temp;
+            end
+        end
+        T(i,j) = minValue;
     end
 end
 
-h=imhist(T);
+h=imhist(T,quantification);
 h = h./sum(h);
 end
