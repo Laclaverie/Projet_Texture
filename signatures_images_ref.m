@@ -1,4 +1,4 @@
-function [sig,nom] = signatures_images_ref(rep2,nom_methode,quantification,fin,nb_images_ref)
+function [sig,nom,tab] = signatures_images_ref(rep2,nom_methode,quantification,fin,nb_images_ref)
 % Creer la signature de chaque image de references, pour ensuite dans le
 % code, les comparer avec l'image test (pas ici)
 nom = cell (3,nb_images_ref*fin);
@@ -11,7 +11,7 @@ switch nom_methode
         disp('creer les signatures');
         for i = 1:fin
             for j=1:nb_images_ref
-                img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
+                img = double(imread(sprintf('%s%d_%d.JPG',rep2,i,j))/255);
                 d= 256/quantification;
                 img = floor(img*255/d)/(quantification-1); % Je quantifie
                 tab{compteur}=img; 
@@ -32,7 +32,7 @@ switch nom_methode
         compteur=1;
         for i = 1:fin
             for j=1:nb_images_ref
-                img = imread(sprintf('%s%d_%d.JPG',rep2,i,j));
+                img = double(imread(sprintf('%s%d_%d.JPG',rep2,i,j))/255);
                 d= 256/quantification;
                 img = floor(img*255/d)/(quantification-1); % Je quantifie
                 tab{compteur}=img; 

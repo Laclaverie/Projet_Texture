@@ -37,20 +37,20 @@ for i=2:Nblig-1
             T(i,j)=bitset(T(i,j),8);
         end
         
-        minValue = T(i,j);
-        currentBinaryValue = dec2bin(T(i,j)); %transfer to binary type
-        for k = 1:8
-            temp = circshift(currentBinaryValue, k); %Shift positions of elements
-            temp = bin2dec(temp); % transfer to decimal type
-            if temp < minValue
-                minValue = temp;
-            end
-        end
-        T(i,j) = minValue;
+%         minValue = T(i,j);
+%         currentBinaryValue = dec2bin(T(i,j)); %transfer to binary type
+%         for k = 1:8
+%             temp = circshift(currentBinaryValue, k); %Shift positions of elements
+%             temp = bin2dec(temp); % transfer to decimal type
+%             if temp < minValue
+%                 minValue = temp;
+%             end
+%         end
+%         T(i,j) = minValue;
     end
 end
 
 %h=imhist(T,quantification);
-h=imhist(T,quantification);
+h=imhist(T);
 h = h./sum(h);
 end

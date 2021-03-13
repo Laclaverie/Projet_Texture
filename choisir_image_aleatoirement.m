@@ -6,9 +6,9 @@ list=dir([rep{rd} '*.JPG']); % regarder toutes les images dans le repertoire
 nbIm=numel(list);  % compter images dans repertoires
 rd_image= randi([nb_images nbIm]); % choisir une image aleatoirement dans le repertoire, en enlevant les images de references
 
-img_ref= imread(sprintf('%s%d.JPG',rep{rd},rd_image));
+img_ref= double(imread(sprintf('%s%d.JPG',rep{rd},rd_image))/255);
 d= 256/256;
-img = floor(img*255/d)/(255); % Je quantifie
+img_ref = floor(img_ref*255/d)/(255); % Je quantifie
 
 if rd ==2|| rd ==6
     categorie_ref="lisse";

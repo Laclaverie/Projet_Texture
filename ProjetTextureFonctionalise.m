@@ -17,12 +17,12 @@ creer_dossier_base_ref(rep,fin,nb_images_ref,quantification);
 %% Creer la signature de chaque image de référence
 rep_ref = 'baseRef/';
 tic;
-[sig,nom] = signatures_images_ref(rep_ref,'histogrammeLBP',quantification,fin,nb_images_ref);
+[sig,nom,tab] = signatures_images_ref(rep_ref,'histogrammeLBP',quantification,fin,nb_images_ref);
 toc;
 %% choisir une image test aleatoirement dans la banque d'images
 
 for test=1 :nb_test
-    tic;
+   
 [img_ref,categorie_ref,rd] = choisir_image_aleatoirement(rep,nb_images_ref); % Choisir une image dans le repertoire en enlevant les images de reference
 signature_ref= histogrammeLBP(img_ref);
 %% La comparer à toutes les signatures
@@ -45,7 +45,7 @@ fprintf('Bonnes categories : %d \n ',matches);
 %% Matrice de confusion
 veriteTerrain= [veriteTerrain categorie_ref];
 sortie_algo = [sortie_algo nom{3,Trie(1,2)}];
-toc;
+
 end
 % Affichage
 c= confusionmat(veriteTerrain,sortie_algo)
