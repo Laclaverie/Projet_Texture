@@ -3,11 +3,11 @@
 %% Variables globales 
 warning('off','all'); % Supprimer les warnings
 close all;
-clear all;
+%clear all;
 clc
 nb_images_ref = 25;
 quantification= 100;
-nb_test=15;
+nb_test=55;
 veriteTerrain =[];
 sortie_algo=[];
 %% Initialiser les categories
@@ -17,7 +17,7 @@ creer_dossier_base_ref(rep,fin,nb_images_ref,quantification);
 %% Creer la signature de chaque image de référence
 rep_ref = 'baseRef/';
 tic;
-if exist ('data') ==0 % Si baseref existe pas, on la créé
+if exist ('data.mat') ==0 % Si baseref existe pas, on la créé
     disp('je suis là');
     [sig,nom,tab] = signatures_images_ref(rep_ref,'histogrammeLBP',quantification,fin,nb_images_ref);
     save('data','sig','nom','tab');
@@ -27,6 +27,7 @@ end
 toc;
 
 %% choisir une image test aleatoirement dans la banque d'images
+tic;
 for test=1 :nb_test
    
 [img_ref,categorie_ref,rd] = choisir_image_aleatoirement(rep,nb_images_ref); % Choisir une image dans le repertoire en enlevant les images de reference
@@ -52,5 +53,13 @@ fprintf('Bonnes categories : %d \n ',matches);
 veriteTerrain= [veriteTerrain categorie_ref];
 sortie_algo = [sortie_algo nom{3,Trie(1,2)}];% Texture la plus proche
 end
-% Affichage
+toc;
+%% Affichage
 c= confusionmat(veriteTerrain,sortie_algo)
+
+figure;
+cm = confusionchart(sortie_algo,veriteTerrain);
+cm.NormalizedValues;
+cm.Title = 'matrice de confusion methode :LBP';
+cm.RowSummary = 'row-normalized';
+cm.ColumnSummary = 'column-normalized';
